@@ -13,13 +13,13 @@ else()
 endif()
 
 # my bindings... https://github.com/user95401/bindings
-include("$ENV{GEODE_SDK}/cmake/CPM.cmake")
-CPMAddPackage(NAME "bindings"
-	GITHUB_REPOSITORY "user95401/bindings"
-	GIT_TAG "main"
-	DOWNLOAD_ONLY YES
-	NO_CACHE YES
-)
+# include("$ENV{GEODE_SDK}/cmake/CPM.cmake")
+# CPMAddPackage(NAME "bindings"
+	# GITHUB_REPOSITORY "user95401/bindings"
+	# GIT_TAG "main"
+	# DOWNLOAD_ONLY YES
+	# NO_CACHE YES
+# )
 
 set(GEODE_BINDINGS_REPO_PATH ${bindings_SOURCE_DIR})
 
@@ -31,6 +31,6 @@ file(GLOB_RECURSE SRC src/*.c*)
 add_library(${PROJECT_NAME} SHARED ${SRC} )
 message("SRC: ${SRC}")
 
-include_directories(src)
+target_include_directories(${PROJECT_NAME} PRIVATE src ext/miniaudio)
 
 setup_geode_mod(${PROJECT_NAME})

@@ -18,35 +18,15 @@
 			"resources/sprites/**/*.png"
 		],
 		"spritesheets": {
-			"main": [
+			"Main": [
 				"resources/spritesheets/main/**/*.png"
 			]
 		},
 		"files": [
-			"resources/files/*",
-			"resources/files/**/*",
-			"resources/**/*.mpg",
-			"resources/**/*.mp3",
-			"resources/**/*.ogg",
-			"resources/**/*.wav",
-			"resources/**/*.plist",
-			"resources/**/*.rand",
-			"resources/**/*.sfx*",
-			"resources/**/**/*.mpg",
-			"resources/**/**/*.mp3",
-			"resources/**/**/*.ogg",
-			"resources/**/**/*.wav",
-			"resources/**/**/*.plist",
-			"resources/**/**/*.rand",
-			"resources/**/**/*.sfx*"
-		],
-		"fonts": {
-			"Arial": {
-				"path": "resources/fonts/ARIAL.ttf",
-				"size": 64,
-				"charset": "32-500,8226,1025-1169"
-			}
-		}
+			"resources/files/config/*",
+			"resources/files/fonts/*",
+			"resources/files/sounds/*"
+		]
 	},
 	"settings": {
 		"nothing": {

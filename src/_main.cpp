@@ -71,6 +71,8 @@ public:
     CC_SYNTHESIZE(float, _pPercentage, Percentage);
 };
 
+#include "iAndy.hpp"
+
 class NPUiLevelCell : public cocos2d::CCNode {
 private:
     CCScale9Sprite* _bg;
@@ -91,6 +93,36 @@ public:
             delete pRet; pRet = 0; return 0;
         }
     };
+
+    std::string getLengthString() {
+        switch (_level->m_levelLength) {
+        case 0: {
+            return std::string((const char *)u8"Короткий");
+        }
+        case 1: {
+            return std::string((const char*)u8"Средний");
+        }
+        case 2: {
+            return std::string((const char*)u8"Длинный");
+        }
+        case 3: {
+            return std::string((const char*)u8"Платформер");
+        }
+        }
+        
+        return "???";
+    }
+
+    std::string getLikeAmount() {
+        float mult = 1.f;
+
+        return iAndy::intToFormatString(_level->m_likes + _level->m_dislikes, mult);
+    }
+    std::string getDownloadAmount() {
+        float mult = 1.f;
+
+        return iAndy::intToFormatString(_level->m_downloads, mult);
+    }
 
     bool init(GJGameLevel* level) {
         if (!CCNode::init()) return false;
@@ -121,6 +153,52 @@ public:
         _titleLabel->setPositionY(10.f);
         _titleLabel->setAnchorPoint({ 0.f, 0.5f });
 
+        std::string length = getLengthString();
+        std::string likes = getLikeAmount();
+        std::string downloads = getDownloadAmount();
+
+        {
+            CCSprite* spr = CCSprite::createWithSpriteFrameName("time_lvl.png"_spr);
+
+            CCSize sz = { 140, 70 };
+            CCLabelTTF* label = CCLabelTTF::create(length.c_str(), "ARIAL.ttf"_spr, 10.f, sz, CCTextAlignment::kCCTextAlignmentLeft);
+
+            spr->setScale(0.5f);
+            spr->setPosition({ -10.f, -7.f });
+            label->setPosition({ 71.f, -38.f });
+
+            _infoContainer->addChild(spr);
+            _infoContainer->addChild(label);
+        }
+
+        {
+            CCSprite* spr = CCSprite::createWithSpriteFrameName("download.png"_spr);
+
+            CCSize sz = { 140, 70 };
+            CCLabelTTF* label = CCLabelTTF::create(downloads.c_str(), "ARIAL.ttf"_spr, 10.f, sz, CCTextAlignment::kCCTextAlignmentLeft);
+
+            spr->setScale(0.5f);
+            spr->setPosition({ 53.f, -7.f });
+            label->setPosition({ 132.f, -38.f });
+
+            _infoContainer->addChild(spr);
+            _infoContainer->addChild(label);
+        }
+
+        {
+            CCSprite* spr = CCSprite::createWithSpriteFrameName("like-lvl.png"_spr);
+
+            CCSize sz = { 140, 70 };
+            CCLabelTTF* label = CCLabelTTF::create(likes.c_str(), "ARIAL.ttf"_spr, 10.f, sz, CCTextAlignment::kCCTextAlignmentLeft);
+
+            spr->setScale(0.5f);
+            spr->setPosition({ 110.f, -7.f });
+            label->setPosition({ 191.f, -38.f });
+
+            _infoContainer->addChild(spr);
+            _infoContainer->addChild(label);
+        }
+
         if (_titleLabel->getContentWidth() > 196.f) {
             float sc = _titleLabel->getContentWidth() / 196.f;
             _titleLabel->setScale(_titleLabel->getScale() / sc);
@@ -146,22 +224,18 @@ public:
 
         CCNode* progressNode = CCNode::create();
 
-        ColumnLayout* layout = ColumnLayout::create();
-        layout->setAutoScale(false);
-
-        progressNode->setLayout(layout);
-
         SimpleProgressBar* bar = SimpleProgressBar::create();
         bar->setPercentage(level->m_normalPercent.value());
         bar->update(0.f);
+        bar->setPosition({ 5.f, 1.f });
         progressNode->addChild(bar);
 
         bar = SimpleProgressBar::create();
         bar->setPercentage(level->m_practicePercent);
         bar->update(0.f);
+        bar->setPosition({ 5.f, 19.f });
+        bar->setBarColor({ 255, 255, 0 });
         progressNode->addChild(bar);
-        
-        progressNode->updateLayout();
 
         progressNode->setScale(0.575f);
         progressNode->setPosition({ 145.f, 4.f });
@@ -339,10 +413,12 @@ public:
         static const auto author = u8"Гущин";
 
         GJGameLevel* leveltest = GJGameLevel::create();
-        leveltest->m_levelName = "test";
+        leveltest->m_levelName = "tesaaaaaaaaaaaaat";
         leveltest->m_creatorName = (const char*)author;
         leveltest->m_normalPercent = 50;
         leveltest->m_practicePercent = 90;
+        leveltest->m_downloads = 50000;
+        leveltest->m_likes = 10000000;
         leveltest->retain();
 
         NPUiLevelCell* cell = NPUiLevelCell::create(leveltest);

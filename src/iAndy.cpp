@@ -55,7 +55,7 @@ std::string iAndy::thousandSeparator(int n) {
 }
 
 std::string iAndy::intToFormatString(int n, float& scaleMult) {
-    if (n < 1000 || n > 100000000) return std::to_string(n);
+    if (n < 1000) return std::to_string(n);
 
     std::string str = thousandSeparator(n);
     str = str.substr(0, str.find(".") + 2);
@@ -66,10 +66,10 @@ std::string iAndy::intToFormatString(int n, float& scaleMult) {
         suffix = std::string((const char*)u8"тыс.");
         scaleMult = 1.1f;
     }
-    else if (n < 100000000) {
+    else if (n < 100000000 || n > 100000000) {
         suffix = std::string((const char*)u8"млн");
         scaleMult = 1.5f;
-    }
+    } 
 
     str += suffix;
 

@@ -51,6 +51,8 @@ ma_sound* NPGlobal::ptrFromName(std::string name) {
 }
 
 void NPGlobal::test() {
+    return;
+
     if (!engine_ready) return;
     if (lock1) return;
 

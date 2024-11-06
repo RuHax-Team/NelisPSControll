@@ -12,6 +12,13 @@
 	"developer": "RuHax Team",
 	"description": "NelisPSControll",
 	"early-load": true,
+	"dependencies": [
+		{
+			"id": "geode.node-ids",
+			"importance": "required",
+			"version": ">=1.12.0"
+		}
+	],
 	"resources": {
 		"sprites": [
 			"resources/sprites/*.png",
@@ -57,5 +64,14 @@
 				"slider": true
 			}
 		}
-	}
+	},
+	"issues": {
+		"info": "You can report issues about Nelis PS mod in <cy>the mod's repository</c>.",
+		"url": "https://github.com/RuHax-Team/NelisPSControll"
+	},
+	"repository": "https://github.com/RuHax-Team/NelisPSControll",
+	"links": {
+		"repository": "https://github.com/RuHax-Team/NelisPSControll"
+	},
+	"tags": [ "online", "enhancement", "music", "interface" ]
 }

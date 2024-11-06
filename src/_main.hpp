@@ -131,12 +131,12 @@ namespace geode::cocos {
         if (!node) log::warn("FAILED TO FIND DATA NODE! id: {}", id);
         return node;
     }
-    class CCLambdaAction : public CCAction {
+    class CCLambdaAction : public CCActionInterval {
     public:
         std::function<void()> m_callback;
         CCLambdaAction() {};
         ~CCLambdaAction() {};
-        void step(float dt) override {
+        void update(float time) override {
             m_callback();
         };
         static CCLambdaAction* create(std::function<void()>&& callback) {

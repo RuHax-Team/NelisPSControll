@@ -1,4 +1,3 @@
-//#include "_main.hpp"
 
 #include <Geode/modify/FMODAudioEngine.hpp>
 #include <Geode/modify/MenuLayer.hpp>
@@ -10,7 +9,11 @@
 #define MINIAUDIO_IMPLEMENTATION
 #include <miniaudio.h>
 
-using namespace geode::prelude;
+#include "_main.hpp"
+
+#define cU8(q) (const char*)u8##q
+#define ttf "ARIAL.ttf"_spr
+#define ttf_arial "ARIAL.ttf"_spr
 
 #include "NPGlobal.hpp"
 #include "SoundTestPopup.hpp"
@@ -492,7 +495,7 @@ public:
         return true;
     }
 };
-
+/*
 class $modify(NLevelBrowserLayer, LevelBrowserLayer) {
     void loadLevelsFinished(CCArray * p0, const char* p1, int p2) {
         LevelBrowserLayer::loadLevelsFinished(p0, p1, p2);
@@ -506,7 +509,71 @@ class $modify(NLevelBrowserLayer, LevelBrowserLayer) {
             return;
         }
     }
-};
+};*/
+
+void attachHover(CCMenuItemSprite* item) {
+    item->runAction(CCRepeatForever::create(CCLambdaAction::create(
+        [item]() {
+            if (item == nullptr) return;
+
+            auto mpos = cocos::getMousePos();
+            auto mouse_rect = CCRectMake(mpos.x, mpos.y, 1, 1);
+
+            auto btton_rect = item->rect();
+            btton_rect.origin = item->convertToWorldSpace({});
+
+            //log::debug("{} ... {}", mouse_rect, btton_rect);
+
+            item->setEnabled(mouse_rect.intersectsRect(btton_rect));
+        }
+    )));
+}
+
+//#include <Geode/modify/CCSprite.hpp>
+//class $modify(CCSpriteasdf, CCSprite) {
+//    //Screenshot_90.png
+//    static CCSprite* createWithSpriteFrameName(const char* pszSpriteFrameName) {
+//        auto aea = CCSpriteWithHue::createWithSpriteFrameName(pszSpriteFrameName);//"Screenshot_89.png"_spr);
+//        aea->setHueDegrees(360);
+//        aea->initShader();
+//        return aea;
+//    }
+//    static CCSprite* create(const char* pszSpriteFrameName) {
+//        auto aea = CCSpriteWithHue::create(pszSpriteFrameName);//"Screenshot_89.png"_spr);
+//        aea->setHueDegrees(360);
+//        aea->initShader();
+//        return aea;
+//    }
+//};
+
+//#include <Geode/modify/CCMenuItemSpriteExtra.hpp>
+//class $modify(CCMenuItemSpriteExtraHower, CCMenuItemSpriteExtra) {
+//    bool init(cocos2d::CCNode * sprite, cocos2d::CCNode * disabledSprite, cocos2d::CCObject * target, cocos2d::SEL_MenuHandler callback) {
+//        if (!CCMenuItemSpriteExtra::init(sprite, disabledSprite, target, callback)) return 0;
+//
+//        this->runAction(CCRepeatForever::create(CCSequence::create(
+//            CCLambdaAction::create(
+//                [this]() {
+//                    if (this == nullptr) return;
+//
+//                    auto mpos = cocos::getMousePos();
+//                    auto mouse_rect = CCRectMake(mpos.x, mpos.y, 1, 1);
+//
+//                    auto btton_rect = this->rect();
+//                    btton_rect.origin = this->convertToWorldSpace({});
+//
+//                    //log::debug("{} ... {}", mouse_rect, btton_rect);
+//
+//                    mouse_rect.intersectsRect(btton_rect) ? this->selected() : this->unselected();
+//                }
+//            ),
+//            CCDelayTime::create(0.1),
+//            nullptr
+//        )));
+//
+//        return 1;
+//    }
+//};
 
 class $modify(NMenuLayer, MenuLayer) {
     void onSoundTest(CCObject * sender) {
@@ -518,25 +585,150 @@ class $modify(NMenuLayer, MenuLayer) {
         if (!MenuLayer::init()) return false;
 
         NPGlobal::init();
-		NPGlobal::test();
+        NPGlobal::test();
 
-        auto myButton = CCMenuItemSpriteExtra::create(
-            CCSprite::createWithSpriteFrameName("GJ_likeBtn_001.png"),
-            this,
-            menu_selector(NMenuLayer::onSoundTest)
+        this->getChildByIDRecursive("main-menu-bg")->setVisible(0);
+
+        auto main_layer = CCLayerColor::create({ 51, 51, 51, 255 });
+        this->addChild(main_layer, -1);
+
+        auto logo = typeinfo_cast<CCSprite*>(this->getChildByIDRecursive("main-title"));
+        logo->setDisplayFrame(CCSpriteFrameCache::get()->spriteFrameByName("nelisps_logo.png"_spr));
+        logo->setPositionY(logo->getPositionY() - 58);
+        logo->setScale(1.35f);
+
+        auto splash = CCLabelTTF::create(cU8("ÅÁÀÒÜ ÍÀÕÓÉ"), ttf_arial, 12.f);
+        splash->setPosition(logo->getContentSize() + CCSizeMake(0, 6));
+        splash->setRotation(6.f);
+        splash->setColor(ccYELLOW);
+        splash->runAction(CCRepeatForever::create(CCSequence::create(
+            CCEaseSineInOut::create(CCScaleTo::create(0.5f, 1.1f)),
+            CCEaseSineInOut::create(CCScaleTo::create(0.5f, 1.0f)),
+            nullptr
+        )));
+        splash->setID("splash"_spr);
+        logo->addChild(splash);
+
+        logo->removeFromParentAndCleanup(0);
+
+        this->getChildByIDRecursive("main-menu")->setVisible(0);
+
+        auto menu = CCMenu::create();
+        menu->setID("menu"_spr);
+
+        auto lb_create_btn = [](const char* text = "unnamed", std::function<void()> func = []() {})
+            {
+
+                auto button_nrm = CCSprite::createWithSpriteFrameName("btnmenu_01.png"_spr);
+                auto button_sel = CCSprite::createWithSpriteFrameName("btnmenu_01_selected.png"_spr);
+
+                auto button_content = CCNode::create();
+                button_nrm->addChild(button_content);
+                button_sel->addChild(button_content);
+                button_content->setContentSize(button_nrm->getContentSize());
+                button_content->setAnchorPoint(CCPointZero);
+
+                auto button_text = CCLabelTTF::create(text, ttf_arial, 16.f);
+                button_text->setPosition({ 122.f, 15.f });
+                limitNodeWidth(button_text, 132.000f, 1.f, 0.2f);
+                button_content->addChild(button_text);
+
+                auto button = CCMenuItemExt::createSprite(button_sel, button_nrm, button_nrm,
+                    [func](CCMenuItem* item) {
+                        func();
+                    }
+                );
+
+                attachHover(button);
+
+                return button;
+            };
+
+        menu->addChild(lb_create_btn(cU8("Sapfire SDK"), [this]()
+            {   
+                auto item = typeinfo_cast<CCMenuItem*>(
+                    this->getChildByIDRecursive("geode.loader/geode-button")
+                );
+                item ? item->activate() : Notification::create(
+                        "cant get the geode button", NotificationIcon::Error, 3.f
+                    )->show();
+            }
+        ));
+        menu->addChild(lb_create_btn(cU8("Àêêàóíò"), [this]() 
+            {
+                auto options = OptionsLayer::create();
+                options->showLayer(0);
+                options->onAccount(options);
+            }
+        ));
+        menu->addChild(lb_create_btn(cU8("Îïöèè"), [this]() {onOptions(this); }));
+        menu->addChild(lb_create_btn(cU8("Ãàðàæ"), [this]() {onGarage(this); }));
+        menu->addChild(lb_create_btn(cU8("Êðåàòîð"), [this]() {onCreator(this); }));
+        menu->addChild(logo);
+
+        menu->setLayout(ColumnLayout::create()->setAutoScale(false)->setGap(12.f));
+        menu->setScale(0.800f);
+
+        main_layer->addChild(menu);
+
+        auto suka = CCLayerColor::create({ 72, 72, 72, 255 });
+        suka->setPositionY(this->getContentHeight());
+        suka->setAnchorPoint({ -0.05f, 1.15f });
+        suka->ignoreAnchorPointForPosition(false);
+        suka->setContentSize({ 136.f, 42.f });
+        main_layer->addChild(suka);
+
+        auto sukasel = CCLayerColor::create({ 122, 122, 122, 255 });
+        sukasel->setContentSize({ 136.f, 42.f });
+
+        auto sukanorm = CCLayerColor::create({ 122, 122, 122, 0 });
+        sukasel->setContentSize({ 136.f, 42.f });
+
+        auto touch = CCMenuItemExt::createSprite(sukasel, sukasel, sukanorm, [this](auto)
+            {
+                this->m_profileButton ? this->m_profileButton->activate() : onGarage(this);
+            }
         );
+        attachHover(touch);
+        suka->addChild(CCMenu::createWithItem(touch));
+        touch->getParent()->setPosition(sukasel->getContentSize() / 2);
 
-        auto menu = this->getChildByID("bottom-menu");
-        menu->addChild(myButton);
+        auto playerimage = SimplePlayer::create(0);
+        playerimage->updatePlayerFrame(
+            GameManager::get()->activeIconForType(IconType::Cube),
+            IconType::Cube
+        );
+        playerimage->setColors(
+            GameManager::get()->colorForIdx(GameManager::get()->getPlayerColor()),
+            GameManager::get()->colorForIdx(GameManager::get()->getPlayerColor2())
+        );
+        GameManager::get()->getPlayerGlow() ? playerimage->setGlowOutline(
+            GameManager::get()->colorForIdx(GameManager::get()->getPlayerGlowColor())
+        ) : void();
+        playerimage->setPosition({ 20.f, 22.f });
+        playerimage->setScale(0.85f);
+        playerimage->setRotation(9.f);
+        suka->addChild(playerimage);
 
-        myButton->setID("my-button"_spr);
+        auto name = CCLabelTTF::create(GameManager::get()->m_playerName.c_str(), ttf_arial, 12.f);
+        name->setPosition({ 40.000f, 28.f });
+        name->setAnchorPoint({ 0.f, 0.5f });
+        limitNodeWidth(name, 96, 0.9f, 0.1f);
+        suka->addChild(name);
 
-        menu->updateLayout();
+        this->getChildByIDRecursive("profile-menu")->setVisible(0);
+        this->getChildByIDRecursive("player-username")->setVisible(0);
+        this->getChildByIDRecursive("close-menu")->setVisible(0);
+        this->getChildByIDRecursive("bottom-menu")->setVisible(0);
+        this->getChildByIDRecursive("social-media-menu")->setVisible(0);
+        this->getChildByIDRecursive("right-side-menu")->setVisible(0);
+        this->getChildByIDRecursive("more-games-menu")->setVisible(0);
 
         return true;
     }
 };
 
+/*
 class $modify(LevelBrowserLayer) {
 public:
     struct Fields {
@@ -624,3 +816,4 @@ public:
         m_fields->new_list->syncButtons();
     }
 };
+*/

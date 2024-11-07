@@ -597,7 +597,14 @@ class $modify(NMenuLayer, MenuLayer) {
         logo->setPositionY(logo->getPositionY() - 58);
         logo->setScale(1.35f);
 
-        auto splash = CCLabelTTF::create(cU8("≈¡¿“‹ Õ¿’”…"), ttf_arial, 12.f);
+        auto splashes = std::vector<const char*>{
+            cU8("—À¿¬¿ Õ—œ—"),
+            cU8("Œ◊ Œ —À¿¬€"),
+            cU8("Ÿ¿— ¡€ ﬂ »’."),
+            cU8("Ÿ¿— ¡€ ﬂ »’. Ÿ¿— ¡€ ﬂ »’. Ÿ¿— ¡€ ﬂ »’. Ÿ¿— ¡€ ﬂ »’. Ÿ¿— ¡€ ﬂ »’. Ÿ¿— ¡€ ﬂ »’."),
+            cU8("–ÛÕ‡ı"),
+        };
+        auto splash = CCLabelTTF::create(*select_randomly(splashes.begin(), splashes.end()), ttf_arial, 12.f);
         splash->setPosition(logo->getContentSize() + CCSizeMake(0, 6));
         splash->setRotation(6.f);
         splash->setColor(ccYELLOW);

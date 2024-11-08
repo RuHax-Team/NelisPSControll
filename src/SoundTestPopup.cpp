@@ -102,7 +102,7 @@ bool SoundTestPopup::init() {
 
 	scale9layer->setPosition({ winsize.width / 2, winsize.height / 2 });
 
-	auto title = u8"Òåñòèðîâàíèå çâóêà";
+	auto title = u8"Ð¢ÐµÑÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð·Ð²ÑƒÐºÐ°";
 
 	CCLabelTTF* bmf = CCLabelTTF::create((const char*)title, "ARIAL.ttf"_spr, 20.f);
 	bmf->setScale(0.8f);

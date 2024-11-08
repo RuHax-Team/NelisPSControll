@@ -63,11 +63,11 @@ std::string iAndy::intToFormatString(int n, float& scaleMult) {
     std::string suffix;
 
     if (n < 1000000) {
-        suffix = std::string((const char*)u8"тыс.");
+        suffix = std::string((const char*)u8"С‚С‹СЃ.");
         scaleMult = 1.1f;
     }
     else if (n < 100000000 || n > 100000000) {
-        suffix = std::string((const char*)u8"млн");
+        suffix = std::string((const char*)u8"РјР»РЅ");
         scaleMult = 1.5f;
     } 
 

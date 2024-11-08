@@ -102,22 +102,22 @@ public:
     std::string getLengthString() {
         switch (_level->m_levelLength) {
         case 0: {
-            return std::string((const char *)u8"Êîðîòêèé");
+            return std::string((const char *)u8"Короткий");
         }
         case 1: {
-            return std::string((const char*)u8"Íåáîëüø.");
+            return std::string((const char*)u8"Небольш.");
         }
         case 2: {
-            return std::string((const char*)u8"Ñðåäíèé");
+            return std::string((const char*)u8"Средний");
         }
         case 3: {
-            return std::string((const char*)u8"Äëèííûé");
+            return std::string((const char*)u8"Длинный");
         }
         case 4: {
-            return std::string((const char*)u8"Äîëãèé");
+            return std::string((const char*)u8"Долгий");
         }
         case 5: {
-            return std::string((const char*)u8"Ïëàòôîð.");
+            return std::string((const char*)u8"Платфор.");
         }
         }
         
@@ -253,7 +253,7 @@ public:
 
         _infoContainer->addChild(progressNode);
 
-        std::string a = std::string((const char *)(u8"Îò ")) + level->m_creatorName;
+        std::string a = std::string((const char *)(u8"От ")) + level->m_creatorName;
 
         //CCLabelBMFont* authorLabel = CCLabelBMFont::create(level->m_creatorName.c_str(), "bigFont.fnt", CCTextAlignment::kCCTextAlignmentRight);
         CCSize sz = { 196, 105 };
@@ -439,7 +439,7 @@ public:
     bool init() override {
         if (!CCLayer::init()) return false;
 
-        static const auto _t = u8"Ïîèñê óðîâíåé";
+        static const auto _t = u8"Поиск уровней";
 
         CCLabelTTF* title = CCLabelTTF::create((const char*)_t, "ARIAL.ttf"_spr, 20.f);
         CCLayerColor* col = CCLayerColor::create({ 51, 51, 51, 255 });
@@ -598,11 +598,11 @@ class $modify(NMenuLayer, MenuLayer) {
         logo->setScale(1.35f);
 
         auto splashes = std::vector<const char*>{
-            cU8("ÑËÀÂÀ ÍÑÏÑ"),
-            cU8("Î×ÊÎ ÑËÀÂÛ"),
-            cU8("ÙÀÑ ÁÛ ß ÈÕ."),
-            cU8("ÙÀÑ ÁÛ ß ÈÕ. ÙÀÑ ÁÛ ß ÈÕ. ÙÀÑ ÁÛ ß ÈÕ. ÙÀÑ ÁÛ ß ÈÕ. ÙÀÑ ÁÛ ß ÈÕ. ÙÀÑ ÁÛ ß ÈÕ."),
-            cU8("ÐóÍàõ"),
+            cU8("СЛАВА НСПС"),
+            cU8("ОЧКО СЛАВЫ"),
+            cU8("ЩАС БЫ Я ИХ."),
+            cU8("ЩАС БЫ Я ИХ. ЩАС БЫ Я ИХ. ЩАС БЫ Я ИХ. ЩАС БЫ Я ИХ. ЩАС БЫ Я ИХ. ЩАС БЫ Я ИХ."),
+            cU8("РуНах"),
         };
         auto splash = CCLabelTTF::create(*select_randomly(splashes.begin(), splashes.end()), ttf_arial, 12.f);
         splash->setPosition(logo->getContentSize() + CCSizeMake(0, 6));
@@ -661,16 +661,16 @@ class $modify(NMenuLayer, MenuLayer) {
                     )->show();
             }
         ));
-        menu->addChild(lb_create_btn(cU8("Àêêàóíò"), [this]() 
+        menu->addChild(lb_create_btn(cU8("Аккаунт"), [this]() 
             {
                 auto options = OptionsLayer::create();
                 options->showLayer(0);
                 options->onAccount(options);
             }
         ));
-        menu->addChild(lb_create_btn(cU8("Îïöèè"), [this]() {onOptions(this); }));
-        menu->addChild(lb_create_btn(cU8("Ãàðàæ"), [this]() {onGarage(this); }));
-        menu->addChild(lb_create_btn(cU8("Êðåàòîð"), [this]() {onCreator(this); }));
+        menu->addChild(lb_create_btn(cU8("Опции"), [this]() {onOptions(this); }));
+        menu->addChild(lb_create_btn(cU8("Гараж"), [this]() {onGarage(this); }));
+        menu->addChild(lb_create_btn(cU8("Креатор"), [this]() {onCreator(this); }));
         menu->addChild(logo);
 
         menu->setLayout(ColumnLayout::create()->setAutoScale(false)->setGap(12.f));
@@ -797,7 +797,7 @@ public:
             return;
         }
 
-        //log::info("list_entries_node={}", list_entries_node);
+        //  log::info("list_entries_node={}", list_entries_node);
 
         list_entries_node->sortAllChildren();
         CCArray* children = list_entries_node->getChildren();
